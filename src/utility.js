@@ -17,4 +17,4 @@ function getDistanceBetweenVector3s(vecA, vecB){
                  + Math.pow(diffZ, 2));
 }
 
-export {getDistanceBetweenVector3s, lerpBetweenVec3s, lerp, repository_rooms, repository_vehicles, repository_users_23};
+export {getDistanceBetweenVector3s, lerpBetweenVec3s, lerp};
