@@ -1,6 +1,16 @@
-const STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = 1681106400000;
-const END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = 1681524000000;
-const TIMESCALE = 60;
+const years_jan_1 = {"2023":1672531200000, "2024":1704070800000}
+
+const April_10th_offset = 8661600000
+const April_14th_offset = 8895600000
+
+let STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = 0;
+let END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = 1681530000000;
+
+function setStartingTime(newStartingTime){
+    STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = newStartingTime
+}
+
+const TIMESCALE = 50;
 
 let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon Section B"},
                         {"id":814,"deck":7,"name":"3rd Class Forward Dining Saloon Section A"},
@@ -45,7 +55,7 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":587,"deck":1,"name":"2nd Class Port Promenade"},
                         {"id":586,"deck":1,"name":"1st Class Port Aft Promenade"},
                         {"id":641,"deck":1,"name":"1st Class Elevated Promenade"},
-                        {"id":585,"deck":1,"name":"Officer's Promenade "},
+                        {"id":585,"deck":1,"name":"Officer's Promenade Port"},
                         {"id":584,"deck":1,"name":"Bridge"},
                         {"id":581,"deck":10,"name":"Turbine Engine Room"},
                         {"id":582,"deck":16,"name":"3rd Class Passenger Entrance"},
@@ -60,7 +70,7 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":593,"deck":2,"name":"1st Class Fwd. Port Enclosed Prom."},
                         {"id":594,"deck":2,"name":"1st Class Aft Port Enclosed Prom."},
                         {"id":592,"deck":2,"name":"A-Deck 1st Class Forward Midship   Prom."},
-                        {"id":591,"deck":1,"name":"Officer's Promenade"},
+                        {"id":591,"deck":1,"name":"Officer's Promenade Starboard"},
                         {"id":647,"deck":2,"name":"1st Class Starboard Covered Promenade"},
                         {"id":645,"deck":2,"name":"1st Class Forward Starboard  Promenade"},
                         {"id":640,"deck":1,"name":"1st Class Port Forward Promenade"},
@@ -127,10 +137,10 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":654,"deck":3,"name":"B-Deck 1st Class Star. Promenade"},
                         {"id":655,"deck":3,"name":"B-Deck 2nd Class Starboard Promenade"},
                         {"id":656,"deck":3,"name":"B-Deck 2nd Class Port Promenade"},
-                        {"id":657,"deck":3,"name":"3rd Class Promenade"},
+                        {"id":657,"deck":3,"name":"3rd Class Promenade Port"},
                         {"id":663,"deck":5,"name":"D-Deck 1st Class Entrance"},
                         {"id":659,"deck":1,"name":"Wheelhouse"},
-                        {"id":658,"deck":3,"name":"3rd Class Promenade"},
+                        {"id":658,"deck":3,"name":"3rd Class Promenade Starboard"},
                         {"id":664,"deck":3,"name":"B-Deck 1st Class Entrance"},
                         {"id":689,"deck":6,"name":"E-Deck Forward Corridor"},
                         {"id":701,"deck":4,"name":"C-Deck 1st Class Gents Lavatory"},
@@ -2266,4 +2276,5 @@ var repository_vehicles = [
 {"id":14,"name":"D-LZ129","decks":[{"id":63},
 {"id":64}]}];
 
-export {STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, TIMESCALE, repository_rooms, repository_vehicles}
+export {STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, setStartingTime,
+       TIMESCALE, repository_rooms, repository_vehicles, years_jan_1, April_10th_offset, April_14th_offset}

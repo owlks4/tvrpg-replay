@@ -83,34 +83,57 @@ function incrementOccupants(room){
     room.occupants = room.occupants + 1;
 }
 
+function removeItemFromArray(array,item){
+    let indexOfItem = array.indexOf(item)
+    return array.slice(0, indexOfItem).concat(array.slice(indexOfItem+1)) 
+}
+
+function setScaleOfOccupants(room){
+    let scale = 1 + (room.occupants/20)
+    room.occupants3d.forEach((occupant) => {
+        if (occupant.scale.x != scale){
+            occupant.scale.set(scale,1,scale)
+        }
+    });
+}
+
 function movePeopleIfRequired(characters,time){
+    if (characters == undefined){return;}
+
    characters.forEach((character) => {
         let newestEntryAtThisTime = getLatestEntryInCharacterHistoryGivenThisTimestamp(character,time);
         if (newestEntryAtThisTime != null){
             let shouldBeInThisRoom = newestEntryAtThisTime.roomid
             if (character.roomItIsCurrentlyDisplayedIn != shouldBeInThisRoom){  //if the character needs to be moved from its current room to the one it should be in instead
                 if (character.roomItIsCurrentlyDisplayedIn != null){
-                    decrementOccupants(getRoomById(character.roomItIsCurrentlyDisplayedIn))
-                }                
+                    let oldRoom = getRoomById(character.roomItIsCurrentlyDisplayedIn)
+                    decrementOccupants(oldRoom)
+                    oldRoom.occupants3d = removeItemFromArray(oldRoom.occupants3d,character)
+                }
                 character.roomItIsCurrentlyDisplayedIn = shouldBeInThisRoom
                 let newRoom = getRoomById(shouldBeInThisRoom)
+                newRoom.occupants3d.push(character)
+                character.myRoom = newRoom
                 incrementOccupants(newRoom)
                 if (newRoom.position3D != null){
                     character.object3d.position.set(newRoom.position3D.x,newRoom.position3D.y,newRoom.position3D.z)
                     console.log(character.object3d)
                     console.log(newRoom.position3D)
                     console.log("Should be visually moving "+character.name + " to room "+character.roomItIsCurrentlyDisplayedIn)
-                    let scale = 1 + (newRoom.occupants/10)
-                    if (character.object3d.scale.x != scale){
-                        character.object3d.scale.set(scale,scale,scale)
-                    }                
                 } else {
+                    character.object3d.position.set(0,0,0)
                     //console.log(character.name + " moved to "+newRoom.name + "... but because it doesn't have a physical location ascribed to it, their position will not update from their old position...")
                 }
-                //console.log("TODO: " +character.name + " moves to room "+character.roomItIsCurrentlyDisplayedIn)
             }
         }
-   })
+
+        if (character.myRoom != null && character.object3d != null){
+            let scale = 1 + (character.myRoom.occupants/5)
+            if (character.object3d.scale.x != scale){
+                character.object3d.scale.set(scale,scale >= 1 ? 1 : 0,scale)
+            }
+        }
+   });
 }
 
 function spawn2DText(parentObject, text, yMultiplier, extraTextClass, attributionText, subscript){
