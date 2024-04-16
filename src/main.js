@@ -19,25 +19,25 @@ let characters = []
 
 TIME_RANGE.oninput = (e) => {
   let newValue = e.target.value;
-  titanic_time_millseconds_since_jan_1_1970 = STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 + (newValue * (END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 - STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970))
+  titanic_time_milliseconds_since_jan_1_1970 = STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 + (newValue * (END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 - STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970))
   updateVisualClock();
   movePeopleIfRequired();
   }
 
 let loader = new GLTFLoader();
 
-let titanic_time_millseconds_since_jan_1_1970 = STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970;
+let titanic_time_milliseconds_since_jan_1_1970 = STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970;
 let clockRunning = true;
 let lastTimeClockUpdated = Date.now()
 
 start();
 
-function millseconds_since_jan_1_1970_to_string_time(input) {
-  return new Date(input).toString()
+function milliseconds_since_jan_1_1970_to_string_time(input) {
+  return new Date(input).toString().split("GMT")[0]
 }
 
 function updateVisualClock(){
-  titleText.innerText = millseconds_since_jan_1_1970_to_string_time(titanic_time_millseconds_since_jan_1_1970);
+  titleText.innerText = milliseconds_since_jan_1_1970_to_string_time(titanic_time_milliseconds_since_jan_1_1970);
 }
 
 function getChildByName(scene, name){
@@ -53,7 +53,7 @@ async function start() {
     let response = null;
 
     setStartingTime(years_jan_1[YEAR] + April_14th_offset)
-    titanic_time_millseconds_since_jan_1_1970 = STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970;
+    titanic_time_milliseconds_since_jan_1_1970 = STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970;
 
     switch (YEAR){
       case 2023:
@@ -115,12 +115,12 @@ async function start() {
     function animate() {
       requestAnimationFrame( animate );
       let now = Date.now()
-      if (clockRunning && titanic_time_millseconds_since_jan_1_1970 < END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 && now - lastTimeClockUpdated >= 1000/TIMESCALE){
-        titanic_time_millseconds_since_jan_1_1970 += 1000 * (TIMESCALE/1); //tick clock 
-        movePeopleIfRequired(characters,titanic_time_millseconds_since_jan_1_1970);
+      if (clockRunning && titanic_time_milliseconds_since_jan_1_1970 < END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 && now - lastTimeClockUpdated >= 1000/TIMESCALE){
+        titanic_time_milliseconds_since_jan_1_1970 += 1000 * (TIMESCALE/1); //tick clock 
+        movePeopleIfRequired(characters,titanic_time_milliseconds_since_jan_1_1970);
         lastTimeClockUpdated = now;
         updateVisualClock()
-        TIME_RANGE.value = (titanic_time_millseconds_since_jan_1_1970 - STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970) / (END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 - STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970)
+        TIME_RANGE.value = (titanic_time_milliseconds_since_jan_1_1970 - STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970) / (END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 - STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970)
       }
       controls.update();
       setDistBetweenCameraAndTargetFromCamAndTargetPos(camera.position.distanceTo(controls.target))
@@ -130,4 +130,4 @@ async function start() {
     animate();
 }
 
-export {TIMESCALE,characters,titanic_time_millseconds_since_jan_1_1970}
+export {TIMESCALE,characters,titanic_time_milliseconds_since_jan_1_1970}

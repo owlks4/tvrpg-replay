@@ -1,7 +1,7 @@
 import * as THREE from "three"
 import { OrbitControls } from "./OrbitControls.js";
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { repository_rooms } from "./consts.js";
+import { repository_rooms, END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 } from "./consts.js";
 
 let scene = null;
 let renderer = null;
@@ -23,6 +23,7 @@ function makePlaneForCharacter(character, geometry, material){
     mesh.displayname = character.name;
     scene.add( mesh );
     character.object3d = mesh
+    spawn2DText(mesh, character.name, 1, "", "", "")
 }
 
 function createScene(){
@@ -50,12 +51,23 @@ function createScene(){
 
 function getLatestEntryInCharacterHistoryGivenThisTimestamp(character,time){
     let entry = {"time":0}; //starts with a placeholder for the sake of the initial comparison
+    let index = -1;
+
+    let hadToUseLastEntry = false; //if we end up using the last entry in their history, we just make their character disappear - stops random people who last logged off on the forecastle from staying there forever.
 
     for (let i = 0; i < character.room_entry_records.length; i++){
         let candidate = character.room_entry_records[i]
         if (candidate.time > entry.time && candidate.time <= time){
             entry = candidate;
+            index = i;
+            if (i == character.room_entry_records.length - 1){
+                hadToUseLastEntry = true;
+            }
         }
+    }
+
+    if (hadToUseLastEntry || (character.room_entry_records[index+1].time > END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970)){ //if this is their last entrance, then instead of displaying it, just put them in heaven, off-screen - otherwise randos will be hanging around on titanic in the last place they spoke, even when it has sunk
+        return {"roomid": 600, "time": 0};                                                                              //(cont. or, if their next entry is after the end of our viewing period.)
     }
 
     if (entry.time == 0){
@@ -88,15 +100,6 @@ function removeItemFromArray(array,item){
     return array.slice(0, indexOfItem).concat(array.slice(indexOfItem+1)) 
 }
 
-function setScaleOfOccupants(room){
-    let scale = 1 + (room.occupants/20)
-    room.occupants3d.forEach((occupant) => {
-        if (occupant.scale.x != scale){
-            occupant.scale.set(scale,1,scale)
-        }
-    });
-}
-
 function movePeopleIfRequired(characters,time){
     if (characters == undefined){return;}
 
@@ -117,12 +120,10 @@ function movePeopleIfRequired(characters,time){
                 incrementOccupants(newRoom)
                 if (newRoom.position3D != null){
                     character.object3d.position.set(newRoom.position3D.x,newRoom.position3D.y,newRoom.position3D.z)
-                    console.log(character.object3d)
-                    console.log(newRoom.position3D)
-                    console.log("Should be visually moving "+character.name + " to room "+character.roomItIsCurrentlyDisplayedIn)
+                    //console.log("Should be visually moving "+character.name + " to room "+character.roomItIsCurrentlyDisplayedIn)
                 } else {
                     character.object3d.position.set(0,0,0)
-                    //console.log(character.name + " moved to "+newRoom.name + "... but because it doesn't have a physical location ascribed to it, their position will not update from their old position...")
+                    console.log(character.name + " moved to "+newRoom.name + "... but because it doesn't have a physical location ascribed to it, their position will not update from their old position...")
                 }
             }
         }

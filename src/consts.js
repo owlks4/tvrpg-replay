@@ -1,10 +1,10 @@
 const years_jan_1 = {"2023":1672531200000, "2024":1704070800000}
 
 const April_10th_offset = 8661600000
-const April_14th_offset = 8895600000
+const April_14th_offset = 8950000000
 
 let STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = 0;
-let END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = 1681530000000;
+let END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = 1681540000000;
 
 function setStartingTime(newStartingTime){
     STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = newStartingTime
@@ -2275,6 +2275,8 @@ var repository_vehicles = [
 {"id":60}]},
 {"id":14,"name":"D-LZ129","decks":[{"id":63},
 {"id":64}]}];
+
+repository_rooms.push({"id":-1,"deck":-1,"name":"Nowhere"},)
 
 export {STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, setStartingTime,
        TIMESCALE, repository_rooms, repository_vehicles, years_jan_1, April_10th_offset, April_14th_offset}

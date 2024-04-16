@@ -49,6 +49,8 @@ canvas:active {
   background-color: transparent;
   pointer-events: all;
   position:relative;
+  color:rgba(0,0,0,0.5);
+  font-size:0.5em;
 }
 
 .label .label-toggle {
