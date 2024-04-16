@@ -1,0 +1,22 @@
+{
+  "name": "tvrpg-replay",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "homepage": "https://owlks4.github.io/",
+  "scripts": {
+    "dev": "vite",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.0.8"
+  },
+  "dependencies": {
+    "gh-pages": "^6.1.1",
+    "three": "^0.161.0",
+    "troika-three-text": "^0.49.0"
+  }
+}
