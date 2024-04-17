@@ -12,13 +12,17 @@ def process_messages():
 
 	for message in giant_messages_object:
 		this_msg_userid = message.get("userId")
+		this_msg_room_id = message.get("roomId")
 		person_history = None
 		if this_msg_userid in people_histories:
 			person_history = people_histories[this_msg_userid]
 		else:
+			if str(message.get("vehicleId")) == "2": # if this initial message belonging to someone is on Carpathia... then continue to the next loop, rather than adding the person.
+				print("Refusing to initialise a person whose first ever room entry was on carpathia")
+				continue
 			person_history = Person(this_msg_userid)
 			people_histories[this_msg_userid] = person_history
-		this_msg_room_id = message.get("roomId")
+
 		if len(person_history.room_entry_records) == 0 or not this_msg_room_id == person_history.room_entry_records[-1].get("roomid"):
 			if str(message.get("vehicleId")) == "2": #to stop random pollution of the after math with a giant spike in carpathia signups, just replace all carpathia room transitions to people going to heaven
 				print("Faking a carpathia room into heaven")
