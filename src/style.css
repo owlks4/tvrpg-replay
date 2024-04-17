@@ -44,6 +44,11 @@ canvas:active {
   pointer-events: none;
 }
 
+#person-selector {
+  pointer-events: all;
+  max-width:20em;
+}
+
 .label {
   text-align: center;
   background-color: transparent;

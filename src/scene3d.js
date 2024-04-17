@@ -1,7 +1,7 @@
 import * as THREE from "three"
 import { OrbitControls } from "./OrbitControls.js";
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { repository_rooms, END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 } from "./consts.js";
+import { repository_rooms, END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 } from "./consts.js";
 
 let scene = null;
 let renderer = null;
@@ -20,15 +20,15 @@ function setDistBetweenCameraAndTargetFromCamAndTargetPos(newValue){
 function makePlaneForCharacter(character, geometry, material){
     const mesh = new THREE.Mesh( geometry, material );
     mesh.name = character.id
-    mesh.displayname = character.name;
+    mesh.rotation.set(0, Math.random() * 360, 0, 'XYZ')
     scene.add( mesh );
     character.object3d = mesh
-    spawn2DText(mesh, character.name, 1, "", "", "")
+    //spawn2DText(mesh, character.name, 1, "", "", "")
 }
 
 function createScene(){
     scene = new THREE.Scene();
-    scene.background = new THREE.Color("#111121");
+    scene.background = new THREE.Color("#777777");
     camera = new THREE.OrthographicCamera( -window.innerWidth / 2, window.innerWidth / 2, window.innerHeight / 2, -window.innerHeight / 2, 0.1, 1000 );
     camera.zoom = 21.7
     
@@ -66,8 +66,9 @@ function getLatestEntryInCharacterHistoryGivenThisTimestamp(character,time){
         }
     }
 
-    if (hadToUseLastEntry || (character.room_entry_records[index+1].time > END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970)){ //if this is their last entrance, then instead of displaying it, just put them in heaven, off-screen - otherwise randos will be hanging around on titanic in the last place they spoke, even when it has sunk
-        return {"roomid": 600, "time": 0};                                                                              //(cont. or, if their next entry is after the end of our viewing period.)
+    if (hadToUseLastEntry  //if this is their last entrance, then instead of displaying it, just put them in heaven, off-screen - otherwise randos will be hanging around on titanic in the last place they spoke, even when it has sunk        
+        || (character.room_entry_records[index+1].time > END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970)){ //(cont.) or, if their next entry is after the end of our viewing period.
+        return {"roomid": 600, "time": 0};                                                                              
     }
 
     if (entry.time == 0){
@@ -100,8 +101,52 @@ function removeItemFromArray(array,item){
     return array.slice(0, indexOfItem).concat(array.slice(indexOfItem+1)) 
 }
 
+function recalculateRoomDistancesBetweenPeopleForLater(room){
+    if (room.widthLength == null){
+        return
+    }
+    let perSide = Math.sqrt(room.occupants)
+    room.peopleAlongWidth = Math.ceil(perSide)
+    room.peopleAlongLength = Math.ceil(perSide)
+}
+
+function getArrayOfStandingPositionsWithinRoom(room){
+
+    if (room.object3d == null || room.widthLength == null){
+        return (0,0,0)
+    }
+
+    let w = (room.peopleAlongWidth * 0.12 * room.widthLength[0])
+    let l = (room.peopleAlongLength * 0.12 * room.widthLength[1])
+
+    if (w > room.widthLength[0]){ //cap the amount of width taken up by the people in the room at the room width
+        w = room.widthLength[0];
+    }
+
+    if (l > room.widthLength[1]){ //cap the amount of length taken up by the people in the room at the room length
+        l = room.widthLength[1];
+    }
+
+    let positions = Array.apply(null, Array(room.peopleAlongLength * room.peopleAlongWidth)).map(function () {})
+
+    let xOrigin = room.object3d.position.x - (w/2)
+    let zOrigin = room.object3d.position.z - (l/2)
+
+    for (let z = 0; z < room.peopleAlongLength; z++){
+        for (let x = 0; x < room.peopleAlongWidth; x++){
+            positions[(z * room.peopleAlongWidth) + x] = [xOrigin + ((x/room.peopleAlongWidth) * w), 
+                                                          zOrigin + ((z/room.peopleAlongLength) * l)];
+        }    
+    }
+
+    room.personSpacingXZ = [w/room.peopleAlongWidth, l/room.peopleAlongLength]
+    return positions
+}
+
 function movePeopleIfRequired(characters,time){
     if (characters == undefined){return;}
+
+    let roomsRequiredInSecondPass = []
 
    characters.forEach((character) => {
         let newestEntryAtThisTime = getLatestEntryInCharacterHistoryGivenThisTimestamp(character,time);
@@ -112,29 +157,36 @@ function movePeopleIfRequired(characters,time){
                     let oldRoom = getRoomById(character.roomItIsCurrentlyDisplayedIn)
                     decrementOccupants(oldRoom)
                     oldRoom.occupants3d = removeItemFromArray(oldRoom.occupants3d,character)
+                    recalculateRoomDistancesBetweenPeopleForLater(oldRoom)
+                    roomsRequiredInSecondPass.push(oldRoom);
                 }
                 character.roomItIsCurrentlyDisplayedIn = shouldBeInThisRoom
                 let newRoom = getRoomById(shouldBeInThisRoom)
                 newRoom.occupants3d.push(character)
                 character.myRoom = newRoom
                 incrementOccupants(newRoom)
-                if (newRoom.position3D != null){
-                    character.object3d.position.set(newRoom.position3D.x,newRoom.position3D.y,newRoom.position3D.z)
-                    //console.log("Should be visually moving "+character.name + " to room "+character.roomItIsCurrentlyDisplayedIn)
-                } else {
+                recalculateRoomDistancesBetweenPeopleForLater(newRoom)
+                roomsRequiredInSecondPass.push(newRoom)
+                if (newRoom.position3D == null){
                     character.object3d.position.set(0,0,0)
-                    console.log(character.name + " moved to "+newRoom.name + "... but because it doesn't have a physical location ascribed to it, their position will not update from their old position...")
+                    //console.log(character.name + " moved to "+newRoom.name + "... but because it doesn't have a physical location ascribed to it, their position will not update from their old position...")
                 }
             }
         }
-
-        if (character.myRoom != null && character.object3d != null){
-            let scale = 1 + (character.myRoom.occupants/5)
-            if (character.object3d.scale.x != scale){
-                character.object3d.scale.set(scale,scale >= 1 ? 1 : 0,scale)
-            }
-        }
    });
+
+   roomsRequiredInSecondPass.forEach((room) => {
+    if (room.object3d != null) {
+        let positions = getArrayOfStandingPositionsWithinRoom(room)
+        room.occupants3d.sort((a,b) => {return a.name.localeCompare(b.name)}) // sort occupants into alphabetical order; means the character indices within the room stay more consistent when people leave/join, instead of sliding about everywhere
+        room.occupants3d.forEach((character,index) => {
+                let newPos = positions[index]      //givenMyIndexInRoomWhatRelativePositionShouldIBeIn(room,character)
+                character.object3d.position.set(newPos[0] + (room.personSpacingXZ[0] * character.myRandomPositionScalar[0]),
+                                                room.position3D.y,
+                                                newPos[1] + (room.personSpacingXZ[1] * character.myRandomPositionScalar[1]))    
+            });
+        }
+   })
 }
 
 function spawn2DText(parentObject, text, yMultiplier, extraTextClass, attributionText, subscript){
