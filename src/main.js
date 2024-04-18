@@ -26,11 +26,15 @@ function highlightPersonWithId(id){
   characters.forEach(character => {
     if (character.id == id){
       console.log(character.name + " was selected")
-      character.object3d.material = new THREE.MeshBasicMaterial( {color: 0xc02020, side: THREE.DoubleSide} );
+      character.object3d.material = new THREE.MeshBasicMaterial( {color: 0xe02020, side: THREE.DoubleSide} );
       character.object3d.scale.set(2, 2, 2)
+      character.text = spawn2DText(character.object3d, character.name, 0.7, "", "", "")
     } else {
       character.object3d.material = defaultMaterial;
       character.object3d.scale.set(1, 1, 1)
+      if (character.text != null){
+        character.text[0].remove(character.text[1])
+      }
     }
   })
 }

@@ -12,6 +12,9 @@ let labelRenderer = null;
 let unknownLocationMessageParent = document.getElementById("unknown-location-message-parent");
 let dist_between_camera_and_target = 0;
 
+let failedRoomAccesses = {}
+console.log(failedRoomAccesses)
+
 function setDistBetweenCameraAndTargetFromCamAndTargetPos(newValue){
     dist_between_camera_and_target = newValue;
     return dist_between_camera_and_target
@@ -23,7 +26,6 @@ function makePlaneForCharacter(character, geometry, material){
     mesh.rotation.set(0, Math.random() * 360, 0, 'XYZ')
     scene.add( mesh );
     character.object3d = mesh
-    //spawn2DText(mesh, character.name, 1, "", "", "")
 }
 
 function createScene(){
@@ -46,6 +48,12 @@ function createScene(){
     controls = new OrbitControls( camera, renderer.domElement );
     camera.position.set(-62.980477838884106, 95.59640814208967, 181.9943944006987);
     controls.target.set(5.52, 17.37, 7.51)
+    controls.enableRotate = false
+    controls.mouseButtons = {
+        LEFT: THREE.MOUSE.PAN,
+        MIDDLE: THREE.MOUSE.DOLLY,
+        RIGHT: THREE.MOUSE.PAN
+    }
     controls.update();
 }
 
@@ -169,7 +177,13 @@ function movePeopleIfRequired(characters,time){
                 roomsRequiredInSecondPass.push(newRoom)
                 if (newRoom.position3D == null){
                     character.object3d.position.set(0,0,0)
-                    //console.log(character.name + " moved to "+newRoom.name + "... but because it doesn't have a physical location ascribed to it, their position will not update from their old position...")
+                    //console.log("Someone moved to "+newRoom.name + "... but because it doesn't have a physical location ascribed to it, their position has been set to the origin.")
+                    
+                    if (Object.keys(failedRoomAccesses).includes(newRoom.name)){
+                        failedRoomAccesses[newRoom.name] += 1;
+                    } else {
+                        failedRoomAccesses[newRoom.name] = 1;
+                    }
                 }
             }
         }
