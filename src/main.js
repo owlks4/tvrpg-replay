@@ -3,8 +3,9 @@ import { GLTFLoader } from "./GLTFLoader.js";
 import {createScene,scene,renderer,controls,camera,spawn2DText,labelRenderer,setDistBetweenCameraAndTargetFromCamAndTargetPos,makePlaneForCharacter,movePeopleIfRequired} from "./scene3d.js";
 import decks from "/decks.gltf?url"
 import OUTPUT_PEOPLE_ROOM_HISTORIES_2023 from "/OUTPUT_PEOPLE_ROOM_HISTORIES_2023.json?url"
+import OUTPUT_PEOPLE_ROOM_HISTORIES_2024 from "/OUTPUT_PEOPLE_ROOM_HISTORIES_2024.json?url"
 import {STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970,
-        TIMESCALE, repository_rooms, years_jan_1, April_10th_offset, April_14th_offset, April_14th_evening_offset, setStartingTime} from "./consts.js"
+        TIMESCALE, repository_rooms, setStartingTime, setEndingTime} from "./consts.js"
 import * as THREE from "three"
 
 createScene();
@@ -12,7 +13,15 @@ createScene();
 let TIME_RANGE = document.getElementById("time-range");
 TIME_RANGE.value = 0;
 
-let YEAR = 2023
+let YEAR = 2024
+let MONTH = 3 //3 is april.
+let DAY = 14
+let HOUR = 23
+let MIN = 0
+
+let END_DAY = 15
+let END_HOUR = 5
+let END_MIN = 45
 
 let titleText = document.getElementById("titleText");
 let characters = []
@@ -82,10 +91,34 @@ function atLeastOneCharacterEntryFallsWithinTargetTimeframe(character){
 }
 
 async function start() {
-    let response = null;
+    var s = new Date();
+    s.setYear(YEAR)
+    s.setMonth(MONTH)
+    s.setDate(DAY)
+    s.setHours(HOUR)
+    s.setMinutes(MIN)
+    s.setSeconds(0)
+    s.setMilliseconds(0)
 
-    setStartingTime(years_jan_1[YEAR] + April_14th_evening_offset)
+    var e = new Date();
+    e.setYear(YEAR)
+    e.setMonth(MONTH)
+    e.setDate(END_DAY)
+    e.setHours(END_HOUR)
+    e.setMinutes(END_MIN)
+    e.setSeconds(0)
+    e.setMilliseconds(0)
+
+    setStartingTime(s.getTime())
+    setEndingTime(e.getTime())
+
     titanic_time_milliseconds_since_jan_1_1970 = STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970;
+
+    repository_rooms.forEach(room => {
+      room.name = room.name.trim().replaceAll("  "," ")
+    })
+
+    let response = null;
 
     switch (YEAR){
       case 2023:
@@ -103,7 +136,7 @@ async function start() {
 
     for (let i = 0; i < repository_rooms.length; i++){
       let room = repository_rooms[i];
-      room.name = room.name.replaceAll(" ","_").replaceAll(".","").trim()
+      room.name = room.name.trim().replaceAll("  "," ").replaceAll(" ","_").replaceAll(".","")
       room.occupants = 0
       room.occupants3d = []
     }

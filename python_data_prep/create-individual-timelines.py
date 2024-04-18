@@ -2,7 +2,7 @@ import json
 
 people_histories = {}
 
-YEAR = 2023
+YEAR = 2024
 
 giant_people_object = json.loads(open(str(YEAR)+"/users.json", encoding="utf8").read())
 giant_messages_object = json.loads(open(str(YEAR)+"/messages.json", encoding="utf8").read())

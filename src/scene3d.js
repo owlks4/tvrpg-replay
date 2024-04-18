@@ -178,7 +178,7 @@ function movePeopleIfRequired(characters,time){
                 if (newRoom.position3D == null){
                     character.object3d.position.set(0,0,0)
                     //console.log("Someone moved to "+newRoom.name + "... but because it doesn't have a physical location ascribed to it, their position has been set to the origin.")
-                    
+
                     if (Object.keys(failedRoomAccesses).includes(newRoom.name)){
                         failedRoomAccesses[newRoom.name] += 1;
                     } else {

@@ -1,14 +1,12 @@
-const years_jan_1 = {"2023":1672531200000, "2024":1704070800000}
-
-const April_10th_offset = 8661600000
-const April_14th_offset = 8950000000
-const April_14th_evening_offset = 8978500000
-
 let STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = 0;
-let END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = 1681534000000;
+let END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = 0
 
 function setStartingTime(newStartingTime){
     STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = newStartingTime
+}
+
+function setEndingTime(newEndingTime){
+    END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = newEndingTime
 }
 
 const TIMESCALE = 15;
@@ -33,7 +31,7 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":561,"deck":1,"name":"Emergency Cutter Lifeboat No. 2"},
                         {"id":560,"deck":1,"name":"Emergency Cutter Lifeboat No. 1"},
                         {"id":559,"deck":7,"name":"Swimming Bath"},
-                        {"id":558,"deck":3,"name":"Cafe Parisien"},
+                        {"id":558,"deck":3,"name":"Café Parisien"},
                         {"id":562,"deck":1,"name":"Lifeboat No. 3"},
                         {"id":563,"deck":2,"name":"Lifeboat No. 4"},
                         {"id":564,"deck":1,"name":"Lifeboat No. 5"},
@@ -91,10 +89,10 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":633,"deck":10,"name":"Boiler Room No. 2"},
                         {"id":2501,"deck":10,"name":"No. 2 Ash Ejector & Hoist"},
                         {"id":626,"deck":7,"name":"F-Deck Grand Staircase"},
-                        {"id":631,"deck":3,"name":"Ã€ la Carte Restaurant Section D"},
-                        {"id":546,"deck":3,"name":"Ã€ la Carte Restaurant Section C"},
-                        {"id":545,"deck":3,"name":"Ã€ la Carte Restaurant Section B"},
-                        {"id":544,"deck":3,"name":"Ã€ la Carte Restaurant Section A"},
+                        {"id":631,"deck":3,"name":"À la Carte Restaurant Section D"},
+                        {"id":546,"deck":3,"name":"À la Carte Restaurant Section C"},
+                        {"id":545,"deck":3,"name":"À la Carte Restaurant Section B"},
+                        {"id":544,"deck":3,"name":"À la Carte Restaurant Section A"},
                         {"id":630,"deck":4,"name":"C-Deck Aft Grand Staircase"},
                         {"id":632,"deck":10,"name":"Boiler Room No. 1"},
                         {"id":625,"deck":8,"name":"Squash Racquet Court"},
@@ -138,10 +136,10 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":654,"deck":3,"name":"B-Deck 1st Class Star. Promenade"},
                         {"id":655,"deck":3,"name":"B-Deck 2nd Class Starboard Promenade"},
                         {"id":656,"deck":3,"name":"B-Deck 2nd Class Port Promenade"},
-                        {"id":657,"deck":3,"name":"3rd Class Promenade Port"},
+                        {"id":657,"deck":3,"name":"3rd Class Promenade"},
                         {"id":663,"deck":5,"name":"D-Deck 1st Class Entrance"},
                         {"id":659,"deck":1,"name":"Wheelhouse"},
-                        {"id":658,"deck":3,"name":"3rd Class Promenade Starboard"},
+                        {"id":658,"deck":3,"name":"3rd Class Promenade 2"},
                         {"id":664,"deck":3,"name":"B-Deck 1st Class Entrance"},
                         {"id":689,"deck":6,"name":"E-Deck Forward Corridor"},
                         {"id":701,"deck":4,"name":"C-Deck 1st Class Gents Lavatory"},
@@ -1034,7 +1032,8 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":771,"deck":10,"name":"Firemen's Tunnel"},
                         {"id":773,"deck":3,"name":"B-Deck 1st Class Entrance"},
                         {"id":774,"deck":1,"name":"1st Class Elevated Promenade"},
-                        {"id":775,"deck":6,"name":"2nd Class Enquiry Office"},
+                        {"id":775,"deck":6,"name":"Assistant Purser's Office"},
+                        {"id":3021,"deck":6,"name":"2nd Class Enquiry Office"},
                         {"id":776,"deck":6,"name":"Engineer's Mess"},
                         {"id":777,"deck":10,"name":"Reciprocating Engine Room"},
                         {"id":778,"deck":8,"name":"Refrigerated Storage"},
@@ -1086,8 +1085,8 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":1885,"deck":6,"name":"2nd Class Stewards Berths 29-32"},
                         {"id":1886,"deck":6,"name":"2nd Class Stewards Berths 32-36"},
                         {"id":1887,"deck":6,"name":"2nd Class Stewards Berths 37-40"},
-                        {"id":1888,"deck":6,"name":"3rd Class Stewards Berths  1-4"},
-                        {"id":1889,"deck":6,"name":"3rd Class Stewards Berths \r\n5-8"},
+                        {"id":1888,"deck":6,"name":"3rd Class Stewards Berths 1-4"},
+                        {"id":1889,"deck":6,"name":"3rd Class Stewards Berths 5-8"},
                         {"id":1890,"deck":6,"name":"3rd Class Stewards Berths 9-12"},
                         {"id":1891,"deck":6,"name":"3rd Class Stewards Berths 13-16"},
                         {"id":1892,"deck":6,"name":"3rd Class Stewards Berths 17-20"},
@@ -1328,7 +1327,7 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":2115,"deck":15,"name":"B-60"},
                         {"id":2116,"deck":15,"name":"Corridor"},
                         {"id":2117,"deck":15,"name":"Ladies Lavatory"},
-                        {"id":2118,"deck":15,"name":"Assistant Purser"},
+                        {"id":2118,"deck":15,"name":"Assistant Purser's Office"},
                         {"id":2119,"deck":15,"name":"Ladies Lavatory"},
                         {"id":2120,"deck":15,"name":"Gents Lavatory"},
                         {"id":2121,"deck":15,"name":"Corridor"},
@@ -1455,9 +1454,9 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":156,"deck":26,"name":"Odd Shack"},
                         {"id":157,"deck":26,"name":"Bassin du Commerce"},
                         {"id":158,"deck":26,"name":"Bar de la Marine"},
-                        {"id":159,"deck":26,"name":"CafÃ© Frei"},
+                        {"id":159,"deck":26,"name":"Café Frei"},
                         {"id":160,"deck":26,"name":"Cherbourg Southern Trainyard"},
-                        {"id":161,"deck":26,"name":"Restaurant de l'HÃ´tel France"},
+                        {"id":161,"deck":26,"name":"Restaurant de l'Hôtel France"},
                         {"id":856,"deck":8,"name":"G-Deck 3rd Class Staircase"},
                         {"id":857,"deck":8,"name":"G-Deck Aft 2nd Class Staircase"},
                         {"id":858,"deck":8,"name":"1st Class Baggage Hold"},
@@ -1722,8 +1721,8 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":935,"deck":3,"name":"B-Deck Midship 1st Class Ladies Lav."},
                         {"id":934,"deck":4,"name":"C-Deck Midship 1st Class Gents Lav."},
                         {"id":933,"deck":4,"name":"C-Deck Midship 1st Class Ladies Lav."},
-                        {"id":147,"deck":27,"name":"Atrium-Salon du Grand HÃ´tel Terminus"},
-                        {"id":146,"deck":27,"name":"Restaurant du Grand HÃ´tel Terminus "},
+                        {"id":147,"deck":27,"name":"Atrium-Salon du Grand Hôtel Terminus"},
+                        {"id":146,"deck":27,"name":"Restaurant du Grand Hôtel Terminus "},
                         {"id":145,"deck":27,"name":"Saint-Lazare Holding Cell"},
                         {"id":937,"deck":10,"name":"Bilge & Ballast Pumps"},
                         {"id":938,"deck":10,"name":"Refrigerating Engines"},
@@ -1762,7 +1761,7 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":23,"deck":38,"name":"Boarding Platform"},
                         {"id":22,"deck":38,"name":"Upper Waiting"},
                         {"id":24,"deck":38,"name":"Bridge"},
-                        {"id":1930,"deck":6,"name":"Wine Bottlers Quarters\r\n"},
+                        {"id":1930,"deck":6,"name":"Wine Bottlers Quarters"},
                         {"id":963,"deck":7,"name":"3rd Class Steward's Dormitory"},
                         {"id":25,"deck":39,"name":"Starboard Promenade"},
                         {"id":26,"deck":40,"name":"Boarding Platform"},
@@ -1812,8 +1811,8 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":978,"deck":5,"name":"D-Deck Section O Corridor"},
                         {"id":979,"deck":6,"name":"E-Deck 2nd Class Entrance"},
                         {"id":980,"deck":10,"name":"Electric Engine Room"},
-                        {"id":308,"deck":49,"name":"Roberts Family CafÃ©"},
-                        {"id":309,"deck":49,"name":"Lydon's Gourmet Restaurant"},
+                        {"id":308,"deck":49,"name":"Roberts Family Café"},
+                        {"id":309,"deck":49,"name":"Sullivan's Gourmet Restaurant"},
                         {"id":310,"deck":49,"name":"Stock Pot Pub"},
                         {"id":311,"deck":49,"name":"O'Malley's Restaurant & Ale House"},
                         {"id":312,"deck":49,"name":"The Frances Arms Bar"},
@@ -2000,8 +1999,8 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":2380,"deck":50,"name":"Forward Flying Bridge"},
                         {"id":2381,"deck":50,"name":"Aft Flying Bridge"},
                         {"id":2382,"deck":52,"name":"Starboard Promenade"},
-                        {"id":2383,"deck":53,"name":"Bar de le RÃ©publique"},
-                        {"id":2384,"deck":53,"name":"CafÃ© Claude"},
+                        {"id":2383,"deck":53,"name":"Bar de le République"},
+                        {"id":2384,"deck":53,"name":"Café Claude"},
                         {"id":2385,"deck":53,"name":"Bistro de Gambetta"},
                         {"id":2386,"deck":53,"name":"Post Office & Telephone"},
                         {"id":2387,"deck":53,"name":"Rue Gambetta Pharmacie"},
@@ -2073,7 +2072,7 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":2454,"deck":62,"name":"2nd Class Boarding Tower"},
                         {"id":2455,"deck":61,"name":"1st & 2nd Class Boarding Queues"},
                         {"id":2456,"deck":61,"name":"Berth 44 Train Platform"},
-                        {"id":2457,"deck":61,"name":"Dockside CafÃ© & Bar"},
+                        {"id":2457,"deck":61,"name":"Dockside Café & Bar"},
                         {"id":2458,"deck":62,"name":"1st & 2nd Class Covered Walkway"},
                         {"id":2459,"deck":5,"name":"The Padded Room"},
                         {"id":2461,"deck":4,"name":"C-Deck Bow Crew Corridor"},
@@ -2083,7 +2082,7 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":2466,"deck":2,"name":"A-Deck Aft Fan Room"},
                         {"id":2467,"deck":6,"name":"Spare Crew Berths 9-12"},
                         {"id":2468,"deck":6,"name":"Spare Crew Berths 13-16"},
-                        {"id":2469,"deck":6,"name":"Spare Crew Berths 17-20"},
+                        {"id":2469,"deck":6,"name":"Baggage Master & Squash Court Attendant"},
                         {"id":2470,"deck":4,"name":"3rd Class Port Covered Promenade"},
                         {"id":2471,"deck":52,"name":"Gents Lavatory"},
                         {"id":2472,"deck":52,"name":"Ladies Lavatory"},
@@ -2213,7 +2212,13 @@ let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon S
                         {"id":2584,"deck":7,"name":"Crew Steward Berths 2-3"},
                         {"id":2585,"deck":7,"name":"Musicians Berths 1-4"},
                         {"id":2586,"deck":7,"name":"Musicians Berths 5-8"},
-                        {"id":2587,"deck":7,"name":"3rd Class Galley"}];
+                        {"id":2587,"deck":7,"name":"3rd Class Galley"},
+                        {"id":3022,"deck":2,"name":"First Class Cloak & Rug Room"},
+                        {"id":3023,"deck":1,"name":"2nd Class Cloak & Rug Room"},
+                        {"id":3024,"deck":6,"name":"Assistant Purser"},
+                        {"id":3025,"deck":6,"name":"Assistant Pursers Clerks"},
+                        {"id":800,"deck":11,"name":"Hell"}];
+
 
 var repository_vehicles = [
     {"id":1,"name":"Titanic","decks":[{"id":1},
@@ -2279,5 +2284,5 @@ var repository_vehicles = [
 
 repository_rooms.push({"id":-1,"deck":-1,"name":"Nowhere"},)
 
-export {STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, setStartingTime,
-       TIMESCALE, repository_rooms, repository_vehicles, years_jan_1, April_10th_offset, April_14th_offset, April_14th_evening_offset}
+export {STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, setStartingTime, setEndingTime,
+       TIMESCALE, repository_rooms, repository_vehicles}
