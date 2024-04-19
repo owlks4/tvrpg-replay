@@ -36,6 +36,10 @@ h1 {
   line-height: 1.1;
 }
 
+h2 {
+  font-size:2em;
+}
+
 canvas {
   cursor:grab;
 }
@@ -111,6 +115,23 @@ canvas:active {
 #time-range {
   pointer-events: all;
   width:75em;
+  max-width:90%;
+}
+
+#iceberg {
+  position:absolute;
+  width:1em;
+  height:1em;
+  transform:translate(50%,-150%);
+  background-size: 1em;
+  background-image: url(./iceberg.png);  
+}
+
+#iceberg-range {
+  position:relative;
+  margin:auto;
+  pointer-events: none;
+  width:60em;
   max-width:90%;
 }
 

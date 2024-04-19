@@ -24,9 +24,6 @@ def process_messages():
 			people_histories[this_msg_userid] = person_history
 
 		if len(person_history.room_entry_records) == 0 or not this_msg_room_id == person_history.room_entry_records[-1].get("roomid"):
-			if str(message.get("vehicleId")) == "2": #to stop random pollution of the after math with a giant spike in carpathia signups, just replace all carpathia room transitions to people going to heaven
-				print("Faking a carpathia room into heaven")
-				this_msg_room_id = 600
 			person_history.room_entry_records.append(makeRoomEntryRecord(this_msg_room_id, message.get("time")))
 			print("Person with id "+str(person_history.id)+" enters room "+str(this_msg_room_id))
 	

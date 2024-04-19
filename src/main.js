@@ -15,13 +15,22 @@ TIME_RANGE.value = 0;
 
 let YEAR = 2024
 let MONTH = 3 //3 is april.
-let DAY = 14
-let HOUR = 23
+let DAY = 10
+let HOUR = 7
 let MIN = 0
 
 let END_DAY = 15
 let END_HOUR = 5
 let END_MIN = 45
+
+let iceberg_time = new Date();
+iceberg_time.setYear(YEAR)
+iceberg_time.setMonth(3)
+iceberg_time.setDate(14)
+iceberg_time.setHours(23)
+iceberg_time.setMinutes(40)
+iceberg_time.setSeconds(0)
+iceberg_time.setMilliseconds(0)
 
 let titleText = document.getElementById("titleText");
 let characters = []
@@ -31,6 +40,8 @@ let defaultMaterial = null;
 let personSelector = document.getElementById("person-selector")
 personSelector.onchange = (e) => {highlightPersonWithId(e.target.value)};
 
+let willLiveMaterial = new THREE.MeshBasicMaterial( {color: 0x2070c0, side: THREE.DoubleSide} );
+
 function highlightPersonWithId(id){
   characters.forEach(character => {
     if (character.id == id){
@@ -39,7 +50,7 @@ function highlightPersonWithId(id){
       character.object3d.scale.set(2, 2, 2)
       character.text = spawn2DText(character.object3d, character.name, 0.7, "", "", "")
     } else {
-      character.object3d.material = defaultMaterial;
+      character.object3d.material = defaultMaterial; //character.dies ? defaultMaterial : willLiveMaterial;
       character.object3d.scale.set(1, 1, 1)
       if (character.text != null){
         character.text[0].remove(character.text[1])
@@ -114,6 +125,11 @@ async function start() {
 
     titanic_time_milliseconds_since_jan_1_1970 = STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970;
 
+    let icebergTimeSince1970 = iceberg_time.getTime()
+    let icebergPercentageTranslation = ((icebergTimeSince1970 - STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970)
+                                        / (END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 - STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970)) * 100;
+    document.getElementById("iceberg").style = "left:"+icebergPercentageTranslation+"%";
+
     repository_rooms.forEach(room => {
       room.name = room.name.trim().replaceAll("  "," ")
     })
@@ -156,8 +172,9 @@ async function start() {
             for (let i = 0; i < repository_rooms.length; i++){
               let room = repository_rooms[i];
               if (room.name == location.name){
-                  console.log(room.name + " was located.")
+                  //console.log(room.name + " was located.")
                   room.object3d = location
+                  room.object3d.position.set(location.position.x,deck.position.y,location.position.z)
                   room.position3D = {"x":location.position.x, "y": deck.position.y, "z":location.position.z};
                   room.widthLength = [location.scale.x*2, location.scale.z*2]
                   break;
@@ -180,6 +197,12 @@ async function start() {
           character.myRandomPositionScalar = [(Math.random() * amountOfVarianceAllowedInRandomPosition) - (amountOfVarianceAllowedInRandomPosition / 2),
                                               (Math.random() * amountOfVarianceAllowedInRandomPosition) - (amountOfVarianceAllowedInRandomPosition / 2)]          
           charactersSortedbyName.push(character)
+          let lastRoomId = character.room_entry_records[character.room_entry_records.length - 1].roomid
+          if (lastRoomId == 600 || lastRoomId == 800){
+            character.dies = true
+          } else {
+            character.dies = false
+           }
         })
 
         charactersSortedbyName.sort((a,b) => {return a.name.localeCompare(b.name)})
@@ -195,7 +218,8 @@ async function start() {
             character.object3d.position.set(-999,-999,-999)
           }
         })
-
+        
+        personTemplate.position.set(0,-999,0)
         scene.remove(personTemplate)
         movePeopleIfRequired();
 

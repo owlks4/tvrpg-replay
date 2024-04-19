@@ -12,6 +12,8 @@ let labelRenderer = null;
 let unknownLocationMessageParent = document.getElementById("unknown-location-message-parent");
 let dist_between_camera_and_target = 0;
 
+let HIGHLIGHTED_PERSON_LEAVES_TRAIL = false
+
 let failedRoomAccesses = {}
 console.log(failedRoomAccesses)
 
@@ -24,6 +26,7 @@ function makePlaneForCharacter(character, geometry, material){
     const mesh = new THREE.Mesh( geometry, material );
     mesh.name = character.id
     mesh.rotation.set(0, Math.random() * 360, 0, 'XYZ')
+    mesh.position.set(0,-999,0)
     scene.add( mesh );
     character.object3d = mesh
 }
@@ -46,8 +49,8 @@ function createScene(){
     document.body.appendChild( renderer.domElement );
 
     controls = new OrbitControls( camera, renderer.domElement );
-    camera.position.set(-62.980477838884106, 95.59640814208967, 181.9943944006987);
-    controls.target.set(5.52, 17.37, 7.51)
+    camera.position.set(-62.980477838884106, 100, 181.9943944006987);
+    controls.target.set(0, 22.5, 7.51)
     controls.enableRotate = false
     controls.mouseButtons = {
         LEFT: THREE.MOUSE.PAN,
@@ -74,13 +77,13 @@ function getLatestEntryInCharacterHistoryGivenThisTimestamp(character,time){
         }
     }
 
-    if (hadToUseLastEntry  //if this is their last entrance, then instead of displaying it, just put them in heaven, off-screen - otherwise randos will be hanging around on titanic in the last place they spoke, even when it has sunk        
+    if (hadToUseLastEntry  //if this is their last entrance, then instead of displaying it, just put them in hell, off-screen - otherwise randos will be hanging around on titanic in the last place they spoke, even when it has sunk        
         || (character.room_entry_records[index+1].time > END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970)){ //(cont.) or, if their next entry is after the end of our viewing period.
         return {"roomid": 600, "time": 0};                                                                              
     }
 
     if (entry.time == 0){
-        return null;   //prevents it from accidentally returning the placeholder in the event that we didn't find any latest entry!
+        return {"roomid": 600, "time": 0}  //prevents it from accidentally returning the placeholder in the event that we didn't find any latest entry!
     } else {
         return entry;
     }
@@ -121,7 +124,7 @@ function recalculateRoomDistancesBetweenPeopleForLater(room){
 function getArrayOfStandingPositionsWithinRoom(room){
 
     if (room.object3d == null || room.widthLength == null){
-        return (0,0,0)
+        return (0,-999,0)
     }
 
     let w = (room.peopleAlongWidth * 0.12 * room.widthLength[0])
@@ -175,16 +178,24 @@ function movePeopleIfRequired(characters,time){
                 incrementOccupants(newRoom)
                 recalculateRoomDistancesBetweenPeopleForLater(newRoom)
                 roomsRequiredInSecondPass.push(newRoom)
-                if (newRoom.position3D == null){
-                    character.object3d.position.set(0,0,0)
-                    //console.log("Someone moved to "+newRoom.name + "... but because it doesn't have a physical location ascribed to it, their position has been set to the origin.")
 
-                    if (Object.keys(failedRoomAccesses).includes(newRoom.name)){
-                        failedRoomAccesses[newRoom.name] += 1;
-                    } else {
-                        failedRoomAccesses[newRoom.name] = 1;
+                if (newRoom.position3D == null){
+                    character.object3d.position.set(0,-999,0)
+                    //console.log("Someone moved to "+newRoom.name + "... but because it doesn't have a physical location ascribed to it, their position has been set to the origin.")
+                    
+                    if (newRoom.deck <= 10 || newRoom.deck == 36){
+                        if (Object.keys(failedRoomAccesses).includes(newRoom.name)){
+                            failedRoomAccesses[newRoom.name] += 1;
+                        } else {
+                            failedRoomAccesses[newRoom.name] = 1;
+                        }
                     }
-                }
+                } else if(HIGHLIGHTED_PERSON_LEAVES_TRAIL && character.text != null){
+                        let trail = new THREE.Mesh( character.object3d.geometry, character.object3d.material )
+                        trail.position.set(newRoom.object3d.position.x,newRoom.position3D.y,newRoom.object3d.position.z)
+                        trail.scale.set(3,3,3)
+                        scene.add(trail)
+                    }
             }
         }
    });
