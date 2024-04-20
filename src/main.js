@@ -1,6 +1,7 @@
 import "./style.css";
 import { GLTFLoader } from "./GLTFLoader.js";
-import {createScene,scene,renderer,controls,camera,spawn2DText,labelRenderer,setDistBetweenCameraAndTargetFromCamAndTargetPos,makePlaneForCharacter,movePeopleIfRequired} from "./scene3d.js";
+import {createScene,scene,renderer,controls,camera,spawn2DText,labelRenderer,followedPlayers,
+        setDistBetweenCameraAndTargetFromCamAndTargetPos,makePlaneForCharacter,movePeopleIfRequired} from "./scene3d.js";
 import decks from "/decks.gltf?url"
 import OUTPUT_PEOPLE_ROOM_HISTORIES_2023 from "/OUTPUT_PEOPLE_ROOM_HISTORIES_2023.json?url"
 import OUTPUT_PEOPLE_ROOM_HISTORIES_2024 from "/OUTPUT_PEOPLE_ROOM_HISTORIES_2024.json?url"
@@ -37,27 +38,68 @@ let characters = []
 
 let defaultMaterial = null;
 
+let highlightedPeopleParent = document.getElementById("highlighted-people-parent");
+
 let personSelector = document.getElementById("person-selector")
-personSelector.onchange = (e) => {highlightPersonWithId(e.target.value)};
+personSelector.onchange = (e) => {
+  setHighlightStateOfPersonWithId(e.target.value,true);
+};
 
 let willLiveMaterial = new THREE.MeshBasicMaterial( {color: 0x2070c0, side: THREE.DoubleSide} );
 
-function highlightPersonWithId(id){
-  characters.forEach(character => {
+function setHighlightStateOfPersonWithId(id,shouldHighlight){
+  for (let i = 0; i < characters.length; i++){
+    let character = characters[i];
     if (character.id == id){
-      console.log(character.name + " was selected")
-      character.object3d.material = new THREE.MeshBasicMaterial( {color: 0xe02020, side: THREE.DoubleSide} );
-      character.object3d.scale.set(2, 2, 2)
-      character.text = spawn2DText(character.object3d, character.name, 0.7, "", "", "")
-    } else {
-      character.object3d.material = defaultMaterial; //character.dies ? defaultMaterial : willLiveMaterial;
-      character.object3d.scale.set(1, 1, 1)
-      if (character.text != null){
-        character.text[0].remove(character.text[1])
+      if (shouldHighlight){
+        if (!followedPlayers.includes(character)){
+          followedPlayers.push(character);
+          console.log(character.name + " was selected")
+          character.object3d.material = new THREE.MeshBasicMaterial( {color: 0xe02020, side: THREE.DoubleSide} );
+          character.object3d.scale.set(2, 2, 2)
+          character.text = spawn2DText(character.object3d, character.name, 0.7, "", "", "")
+          let personHighlightWidget = document.createElement("div");
+          personHighlightWidget.className = "person-highlight-widget";
+          personHighlightWidget.style = "background-color:#"+character.object3d.material.color.getHexString();
+          let nameDiv = document.createElement("span");
+          nameDiv.innerText = character.name;
+          nameDiv.style = "margin-right:1em;"
+          let colorInput = document.createElement("input");
+          colorInput.setAttribute("type","color");
+          colorInput.className = "personWidgetColorPicker";
+          colorInput.value = "#"+character.object3d.material.color.getHexString();
+          colorInput.oninput = (e) => {console.log(e.target.value);
+                                      character.object3d.material.color = new THREE.Color(e.target.value);
+                                      personHighlightWidget.style = "background-color:"+e.target.value};
+          console.log(character.object3d.material.color.getHexString())
+          personHighlightWidget.appendChild(nameDiv)
+          personHighlightWidget.appendChild(colorInput)          
+          let closeButton = document.createElement("span")
+          closeButton.style = "margin-left:1em;margin-right:1em;cursor:pointer;"
+          closeButton.innerText = "❌"
+          closeButton.onclick = () => {personHighlightWidget.remove(); setHighlightStateOfPersonWithId(id, false)};
+          personHighlightWidget.appendChild(closeButton);
+          highlightedPeopleParent.appendChild(personHighlightWidget);
+          personSelector.selectedIndex = 0;
+        }
+      } else {
+        character.object3d.material = defaultMaterial; //character.dies ? defaultMaterial : willLiveMaterial;
+        character.object3d.scale.set(1, 1, 1)
+        character.myTrails.forEach(trail => {
+            trail.textObject[0].remove(trail.textObject[1])
+            scene.remove(trail)
+        });
+        character.myTrails = []
+        if (character.text != null){
+          character.text[0].remove(character.text[1])
+          character.text = null;
+        }
       }
+      break;
     }
-  })
+  }
 }
+
 
 TIME_RANGE.oninput = (e) => {
   let newValue = e.target.value;
@@ -195,6 +237,7 @@ async function start() {
         let amountOfVarianceAllowedInRandomPosition = 0.75; // 0 = no deviation, everyone will be in strict lines like an army, 1 = everyone will deviate a lot from their standard position, but it means that when the number of people in the crowd changes, the resulting position changes amongst the occupants are distractingly large
 
         characters.forEach((character) => {
+          character.myTrails = [];
           makePlaneForCharacter(character,personTemplate.geometry, personTemplate.material)
           character.myRandomPositionScalar = [(Math.random() * amountOfVarianceAllowedInRandomPosition) - (amountOfVarianceAllowedInRandomPosition / 2),
                                               (Math.random() * amountOfVarianceAllowedInRandomPosition) - (amountOfVarianceAllowedInRandomPosition / 2)]          

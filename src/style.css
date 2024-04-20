@@ -135,6 +135,10 @@ canvas:active {
   max-width:90%;
 }
 
+input {
+  pointer-events: all;
+}
+
 .speech-bubble-tail {
   bottom: 0;
   left:50%;
@@ -202,4 +206,20 @@ canvas:active {
 
 .skip-button:active {
   border: 1px solid #5561e6;
+}
+
+.person-highlight-widget {
+  pointer-events: all;
+  color:black;
+  font-weight:bold;
+  margin-top:0.5em;
+  border-radius:0.5em;
+  border: 2px solid rgba(0,0,0,0.25);
+  vertical-align:middle;
+  padding: 0 0 0.5em 0.5em;
+  max-width: 20em;
+}
+
+.personWidgetColorPicker{
+  transform:translate(0,10%)
 }

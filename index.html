@@ -18,12 +18,18 @@
       <div style="top:2.5%;position:absolute;left:4%;text-align:left;">
         <strong>Left-click + drag to pan,<br>scroll in and out to zoom<br><span style="font-size:0.8em">Deckplans from Encyclopedia Titanica</span></strong>
       </div>      
-      <div style="top:2.5%;position:absolute;right:4%;text-align:left;">
+      <div style="top:2.5%;position:absolute;right:4%;text-align:left;">        
         <strong>Highlight a particular person:</strong>
+        <br>
+        <input type="checkbox" id="leave-trails" name="leave-trails">
+        <label style="pointer-events: all;" for="leave-trails">Highlighted people leave trails behind them</label>
         <br>
         <select id="person-selector">
           <option value=-1>None</option>
         </select>
+        <div id="highlighted-people-parent" >
+
+        </div>
       </div>      
       <div id="unknown-location-message-parent" style="bottom:10%;position:absolute;left:50%;transform:translate(-50%,-50%)">
       </div>

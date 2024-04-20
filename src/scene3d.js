@@ -2,7 +2,6 @@ import * as THREE from "three"
 import { OrbitControls } from "./OrbitControls.js";
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { repository_rooms,STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970} from "./consts.js";
-import { titanic_time_milliseconds_since_jan_1_1970 } from "./utility.js";
 
 let scene = null;
 let renderer = null;
@@ -13,7 +12,10 @@ let labelRenderer = null;
 let unknownLocationMessageParent = document.getElementById("unknown-location-message-parent");
 let dist_between_camera_and_target = 0;
 
-let HIGHLIGHTED_PERSON_LEAVES_TRAIL = false
+let followedPlayers = [];
+let HIGHLIGHTED_PERSON_LEAVES_TRAIL = true
+
+document.getElementById("leave-trails").onchange = (e) => {HIGHLIGHTED_PERSON_LEAVES_TRAIL = e.target.checked};
 
 let failedRoomAccesses = {}
 console.log(failedRoomAccesses)
@@ -196,8 +198,10 @@ function movePeopleIfRequired(characters,time){
                         let trail = new THREE.Mesh( character.object3d.geometry, character.object3d.material )
                         trail.position.set(newRoom.object3d.position.x,newRoom.position3D.y,newRoom.object3d.position.z)
                         trail.scale.set(3,3,3)
-                        spawn2DText(trail, new Date(newestEntryAtThisTime.time).toTimeString().split(" GMT")[0], 0.5, "", "", "")
+                        let trailText = spawn2DText(trail, new Date(newestEntryAtThisTime.time).toTimeString().split(" GMT")[0], 0.5, "", "", "")
+                        trail.textObject = trailText
                         scene.add(trail)
+                        character.myTrails.push(trail);
                     }
             }
         }
@@ -284,4 +288,5 @@ function getYOffsetForMessageBasedOnCamDist(){
     return step * 5;
 }
 
-export {createScene,scene,renderer,controls,camera, spawn2DText,labelRenderer,setDistBetweenCameraAndTargetFromCamAndTargetPos,makePlaneForCharacter,movePeopleIfRequired}
+export {createScene,scene,renderer,controls,camera, spawn2DText,labelRenderer,followedPlayers,
+        setDistBetweenCameraAndTargetFromCamAndTargetPos,makePlaneForCharacter,movePeopleIfRequired}
