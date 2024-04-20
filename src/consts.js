@@ -9,7 +9,7 @@ function setEndingTime(newEndingTime){
     END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = newEndingTime
 }
 
-const TIMESCALE = 300;
+const TIMESCALE = 25;
 
 let repository_rooms = [{"id":709,"deck":7,"name":"3rd Class Aft Dining Saloon Section B"},
                         {"id":814,"deck":7,"name":"3rd Class Forward Dining Saloon Section A"},
@@ -2285,4 +2285,4 @@ var repository_vehicles = [
 repository_rooms.push({"id":-1,"deck":-1,"name":"Nowhere"},)
 
 export {STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, setStartingTime, setEndingTime,
-       TIMESCALE, repository_rooms, repository_vehicles}
+       TIMESCALE, repository_rooms, repository_vehicles }

@@ -17,4 +17,10 @@ function getDistanceBetweenVector3s(vecA, vecB){
                  + Math.pow(diffZ, 2));
 }
 
-export {getDistanceBetweenVector3s, lerpBetweenVec3s, lerp};
+let titanic_time_milliseconds_since_jan_1_1970 = 0
+
+function setTime(newTime){
+  titanic_time_milliseconds_since_jan_1_1970 = newTime
+}
+
+export {getDistanceBetweenVector3s, lerpBetweenVec3s, lerp, setTime, titanic_time_milliseconds_since_jan_1_1970};

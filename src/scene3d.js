@@ -1,7 +1,8 @@
 import * as THREE from "three"
 import { OrbitControls } from "./OrbitControls.js";
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { repository_rooms, END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 } from "./consts.js";
+import { repository_rooms,STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970} from "./consts.js";
+import { titanic_time_milliseconds_since_jan_1_1970 } from "./utility.js";
 
 let scene = null;
 let renderer = null;
@@ -58,6 +59,7 @@ function createScene(){
         RIGHT: THREE.MOUSE.PAN
     }
     controls.update();
+
 }
 
 function getLatestEntryInCharacterHistoryGivenThisTimestamp(character,time){
@@ -194,6 +196,7 @@ function movePeopleIfRequired(characters,time){
                         let trail = new THREE.Mesh( character.object3d.geometry, character.object3d.material )
                         trail.position.set(newRoom.object3d.position.x,newRoom.position3D.y,newRoom.object3d.position.z)
                         trail.scale.set(3,3,3)
+                        spawn2DText(trail, new Date(newestEntryAtThisTime.time).toTimeString().split(" GMT")[0], 0.5, "", "", "")
                         scene.add(trail)
                     }
             }
