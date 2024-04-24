@@ -5,8 +5,8 @@
     <link rel="icon" type="image/svg+xml" href="https://owlks4.github.io/tvrpg-replay/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Titanic Voyage RPG replay</title>
-    <script type="module" crossorigin src="https://owlks4.github.io/tvrpg-replay/assets/index-No6stJd3.js"></script>
-    <link rel="stylesheet" crossorigin href="https://owlks4.github.io/tvrpg-replay/assets/index-wMXWOQEr.css">
+    <script type="module" crossorigin src="https://owlks4.github.io/tvrpg-replay/assets/index-c6j7Hw6a.js"></script>
+    <link rel="stylesheet" crossorigin href="https://owlks4.github.io/tvrpg-replay/assets/index-cU6W_jCL.css">
   </head>
   <body>
     <div id="centred-absolute">
@@ -20,12 +20,18 @@
       <div style="top:2.5%;position:absolute;left:4%;text-align:left;">
         <strong>Left-click + drag to pan,<br>scroll in and out to zoom<br><span style="font-size:0.8em">Deckplans from Encyclopedia Titanica</span></strong>
       </div>      
-      <div style="top:2.5%;position:absolute;right:4%;text-align:left;">
+      <div style="top:2.5%;position:absolute;right:4%;text-align:left;">        
         <strong>Highlight a particular person:</strong>
+        <br>
+        <input type="checkbox" id="leave-trails" name="leave-trails">
+        <label style="pointer-events: all;" for="leave-trails">Highlighted people leave trails behind them</label>
         <br>
         <select id="person-selector">
           <option value=-1>None</option>
         </select>
+        <div id="highlighted-people-parent" >
+
+        </div>
       </div>      
       <div id="unknown-location-message-parent" style="bottom:10%;position:absolute;left:50%;transform:translate(-50%,-50%)">
       </div>
