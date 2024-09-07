@@ -41,7 +41,9 @@ def process_messages():
 		print(timestamp_end)
 
 		for msg in giant_messages_object:
-			t = msg.get("time")
+			t = msg.get("t")
+			if t == None:
+				t = msg.get("time")			
 			if t > timestamp_start and t < timestamp_end:
 				message = msg.get("message")
 				message = message.replace(",","").replace(".","").replace("!","").replace("?","").replace("-","").replace("\"","").replace("'","").lower()
@@ -79,6 +81,8 @@ if "_id" in giant_messages_object[0] or "type" in giant_messages_object[0] or "i
 		entry.pop("type", None)
 		entry.pop("userId", None)
 		entry.pop("roomId", None)
+		entry["t"] = entry["time"]
+		entry.pop("time",None)
 	new_messages_file_with_message_content_stripped_out = json.dumps(giant_messages_object)
 	open(MESSAGES_FILENAME, mode="w", encoding="utf8").write(new_messages_file_with_message_content_stripped_out)
 

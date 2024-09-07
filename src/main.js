@@ -36,6 +36,8 @@ iceberg_time = iceberg_time.getTime()
 let titleText = document.getElementById("titleText");
 let characters = []
 
+document.getElementById("start-button").disabled = true;
+
 let defaultMaterial = null;
 
 let highlightedPeopleParent = document.getElementById("highlighted-people-parent");
@@ -44,6 +46,8 @@ let personSelector = document.getElementById("person-selector")
 personSelector.onchange = (e) => {
   setHighlightStateOfPersonWithId(e.target.value,true);
 };
+
+let loadingFinished = false;
 
 let willLiveMaterial = new THREE.MeshBasicMaterial( {color: 0x2070c0, side: THREE.DoubleSide} );
 
@@ -114,6 +118,7 @@ setTime(STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970);
 let clockRunning = true;
 let lastTimeClockUpdated = Date.now()
 
+createScene();
 start();
 
 function milliseconds_since_jan_1_1970_to_string_time(input) {
@@ -136,7 +141,7 @@ function getChildByName(scene, name){
 function atLeastOneCharacterEntryFallsWithinTargetTimeframe(character){
   for (let i = 0; i < character.room_entry_records.length; i++){
     let record = character.room_entry_records[i]
-    if (record.time >= STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 && record.time <= END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970){
+    if (record.t >= STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 && record.t <= END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970){
       return true;
     }
   }
@@ -144,8 +149,6 @@ function atLeastOneCharacterEntryFallsWithinTargetTimeframe(character){
 }
 
 async function start() {
-
-    createScene();
 
     var s = new Date();
     s.setYear(YEAR)
@@ -203,13 +206,16 @@ async function start() {
 
     updateVisualClock();
 
+    console.log("Beginning hunting")
+
     loader.load(decks,async function (gltf) {
         await scene.add(gltf.scene); //adds the gltf content to the scene
-        console.log(gltf.scene)
 
         //for each deck, gives all the rooms in repository_rooms that are represented in the model a location reference from the model
-       
-        getChildByName(gltf.scene, "DECKS").children.forEach(deck => {
+
+        let numDecks = getChildByName(gltf.scene, "DECKS").children.length;
+
+        getChildByName(gltf.scene, "DECKS").children.forEach((deck, index) => {
           console.log("Hunting for rooms on deck: "+deck.name)
           deck.children.forEach((location)=>{
             location.name = location.name.trim()
@@ -242,7 +248,7 @@ async function start() {
           character.myRandomPositionScalar = [(Math.random() * amountOfVarianceAllowedInRandomPosition) - (amountOfVarianceAllowedInRandomPosition / 2),
                                               (Math.random() * amountOfVarianceAllowedInRandomPosition) - (amountOfVarianceAllowedInRandomPosition / 2)]          
           charactersSortedbyName.push(character)
-          let lastRoomId = character.room_entry_records[character.room_entry_records.length - 1].roomid
+          let lastRoomId = character.room_entry_records[character.room_entry_records.length - 1].rm
           if (lastRoomId == 600 || lastRoomId == 800){
             character.dies = true
           } else {
@@ -267,14 +273,19 @@ async function start() {
         personTemplate.position.set(0,-999,0)
         scene.remove(personTemplate)
         movePeopleIfRequired();
-
-        animate();
-      });                                 
+        loadingFinished = true;
+        let startButton = document.getElementById("start-button");
+        startButton.style = "";
+        startButton.disabled = false;
+        startButton.innerText = "Start";
+        startButton.onclick = () => {document.getElementById("loading-text").remove(); animate();}
+      });                       
 }
 
 function animate() {
   requestAnimationFrame( animate );
   let now = Date.now()
+
   if (clockRunning && titanic_time_milliseconds_since_jan_1_1970 < END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 && now - lastTimeClockUpdated >= 1000/TIMESCALE){
     setTime(titanic_time_milliseconds_since_jan_1_1970 + 1000 * (TIMESCALE/1)); //tick clock 
     movePeopleIfRequired(characters,titanic_time_milliseconds_since_jan_1_1970);

@@ -48,6 +48,10 @@ canvas:active {
   cursor:grabbing;
 }
 
+canvas .prologue {
+  pointer-events:none;
+}
+
 .no-raycast {
   pointer-events: none;
 }
@@ -222,4 +226,20 @@ input {
 
 .personWidgetColorPicker{
   transform:translate(0,10%)
+}
+
+#start-button {
+  background-color: rgb(78, 204, 78);
+  padding:0.5em 1em;
+  font-size:1.33em;
+  pointer-events: all;
+  z-index:9;
+}
+
+#start-button:hover:not([disabled]) {
+  cursor:pointer;
+}
+
+#start-button[disabled] {
+  background-color: grey;
 }

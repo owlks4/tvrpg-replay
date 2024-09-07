@@ -13,12 +13,11 @@ let unknownLocationMessageParent = document.getElementById("unknown-location-mes
 let dist_between_camera_and_target = 0;
 
 let followedPlayers = [];
-let HIGHLIGHTED_PERSON_LEAVES_TRAIL = true
+let HIGHLIGHTED_PERSON_LEAVES_TRAIL = false;
 
 document.getElementById("leave-trails").onchange = (e) => {HIGHLIGHTED_PERSON_LEAVES_TRAIL = e.target.checked};
 
 let failedRoomAccesses = {}
-console.log(failedRoomAccesses)
 
 function setDistBetweenCameraAndTargetFromCamAndTargetPos(newValue){
     dist_between_camera_and_target = newValue;
@@ -49,7 +48,8 @@ function createScene(){
     
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize( window.innerWidth, window.innerHeight );
-    document.body.appendChild( renderer.domElement );
+    document.getElementById("canvas-parent").appendChild( renderer.domElement );
+    renderer.domElement.className = "prologue";
 
     controls = new OrbitControls( camera, renderer.domElement );
     camera.position.set(-62.980477838884106, 100, 181.9943944006987);
@@ -65,14 +65,14 @@ function createScene(){
 }
 
 function getLatestEntryInCharacterHistoryGivenThisTimestamp(character,time){
-    let entry = {"time":0}; //starts with a placeholder for the sake of the initial comparison
+    let entry = {"t":0}; //starts with a placeholder for the sake of the initial comparison
     let index = -1;
 
     let hadToUseLastEntry = false; //if we end up using the last entry in their history, we just make their character disappear - stops random people who last logged off on the forecastle from staying there forever.
 
     for (let i = 0; i < character.room_entry_records.length; i++){
         let candidate = character.room_entry_records[i]
-        if (candidate.time > entry.time && candidate.time <= time){
+        if (candidate.t > entry.t && candidate.t <= time){
             entry = candidate;
             index = i;
             if (i == character.room_entry_records.length - 1){
@@ -82,12 +82,12 @@ function getLatestEntryInCharacterHistoryGivenThisTimestamp(character,time){
     }
 
     if (hadToUseLastEntry  //if this is their last entrance, then instead of displaying it, just put them in hell, off-screen - otherwise randos will be hanging around on titanic in the last place they spoke, even when it has sunk        
-        || (character.room_entry_records[index+1].time > END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970)){ //(cont.) or, if their next entry is after the end of our viewing period.
-        return {"roomid": 600, "time": 0};                                                                              
+        || (character.room_entry_records[index+1].t > END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970)){ //(cont.) or, if their next entry is after the end of our viewing period.
+        return {"rm": 600, "t": 0};                                                                              
     }
 
-    if (entry.time == 0){
-        return {"roomid": 600, "time": 0}  //prevents it from accidentally returning the placeholder in the event that we didn't find any latest entry!
+    if (entry.t == 0){
+        return {"rm": 600, "t": 0}  //prevents it from accidentally returning the placeholder in the event that we didn't find any latest entry!
     } else {
         return entry;
     }
@@ -166,7 +166,7 @@ function movePeopleIfRequired(characters,time){
    characters.forEach((character) => {
         let newestEntryAtThisTime = getLatestEntryInCharacterHistoryGivenThisTimestamp(character,time);
         if (newestEntryAtThisTime != null){
-            let shouldBeInThisRoom = newestEntryAtThisTime.roomid
+            let shouldBeInThisRoom = newestEntryAtThisTime.rm
             if (character.roomItIsCurrentlyDisplayedIn != shouldBeInThisRoom){  //if the character needs to be moved from its current room to the one it should be in instead
                 if (character.roomItIsCurrentlyDisplayedIn != null){
                     let oldRoom = getRoomById(character.roomItIsCurrentlyDisplayedIn)
@@ -198,7 +198,7 @@ function movePeopleIfRequired(characters,time){
                         let trail = new THREE.Mesh( character.object3d.geometry, character.object3d.material )
                         trail.position.set(newRoom.object3d.position.x,newRoom.position3D.y,newRoom.object3d.position.z)
                         trail.scale.set(3,3,3)
-                        let trailText = spawn2DText(trail, new Date(newestEntryAtThisTime.time).toTimeString().split(" GMT")[0], 0.5, "", "", "")
+                        let trailText = spawn2DText(trail, new Date(newestEntryAtThisTime.t).toTimeString().split(" GMT")[0], 0.5, "", "", "")
                         trail.textObject = trailText
                         scene.add(trail)
                         character.myTrails.push(trail);
