@@ -51,7 +51,7 @@ def get_user_name_by_id(id):
 	return output
 
 def makeRoomEntryRecord(roomid, timestamp):
-	return {"roomid":roomid, "time":timestamp}
+	return {"rm":roomid, "t":timestamp}
 
 
 if "message" in giant_messages_object[0] or "_id" in giant_messages_object[0] or "type" in giant_messages_object[0] or "id" in giant_messages_object[0]:
