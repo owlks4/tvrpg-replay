@@ -275,7 +275,7 @@ async function start() {
         let startButton = document.getElementById("start-button");
         startButton.style = "";
         startButton.disabled = false;
-        startButton.innerText = "Start";
+        startButton.innerText = "Start 🛳️";
         startButton.onclick = () => {document.getElementById("loading-text").remove(); document.getElementById("centred-absolute").style = ""; animate();}
       });                       
 }
