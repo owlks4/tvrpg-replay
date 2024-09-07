@@ -72,10 +72,8 @@ function setHighlightStateOfPersonWithId(id,shouldHighlight){
           colorInput.setAttribute("type","color");
           colorInput.className = "personWidgetColorPicker";
           colorInput.value = "#"+character.object3d.material.color.getHexString();
-          colorInput.oninput = (e) => {console.log(e.target.value);
-                                      character.object3d.material.color = new THREE.Color(e.target.value);
+          colorInput.oninput = (e) => {character.object3d.material.color = new THREE.Color(e.target.value);
                                       personHighlightWidget.style = "background-color:"+e.target.value};
-          console.log(character.object3d.material.color.getHexString())
           personHighlightWidget.appendChild(nameDiv)
           personHighlightWidget.appendChild(colorInput)          
           let closeButton = document.createElement("span")
