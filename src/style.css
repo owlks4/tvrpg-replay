@@ -4,7 +4,7 @@
   font-weight: 400;
 
   color: rgba(255, 255, 255, 0.85);
-  background-color: #242424;
+  background-color: #142444;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -129,6 +129,7 @@ canvas .prologue {
   transform:translate(50%,-150%);
   background-size: 1em;
   background-image: url(./iceberg.png);  
+  pointer-events: all;
 }
 
 #iceberg-range {
@@ -229,17 +230,33 @@ input {
 }
 
 #start-button {
+  border-radius: 0.1em;
+  border:2px solid transparent;
   background-color: rgb(78, 204, 78);
   padding:0.5em 1em;
   font-size:1.33em;
   pointer-events: all;
   z-index:9;
+  transform:translateY(0%);
+  transition: transform 0.1s;
 }
 
 #start-button:hover:not([disabled]) {
   cursor:pointer;
+  transform:translateY(-5%);
+  border:2px solid lime;
 }
 
 #start-button[disabled] {
   background-color: grey;
+}
+
+.ship-chug {
+  display:inline-block;
+  animation: chug 0.5s linear 0s infinite alternate;
+}
+
+@keyframes chug {
+  0%   {transform:translateY(0px)}
+  100%   {transform:translateY(3px)}
 }

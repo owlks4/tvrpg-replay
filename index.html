@@ -7,10 +7,10 @@
     <title>Titanic Voyage RPG replay</title>
   </head>
   <body>
-    <div id="centred-absolute">
+    <div id="centred-absolute" style="display:none;">
       <input id="time-range" type="range" min="0" max="1" step="0.005" style="margin-top:2em">
       <div id="iceberg-range">
-        <div id="iceberg"></div>
+        <div title="Iceberg impact" id="iceberg"></div>
       </div>
       <div class="label-FORMERLY" style="text-align:center; margin-bottom:0">
         <h2 class="label-toggle text" style="max-width:unset;text-align:center;margin:0" id="titleText">April 15, 1912</h2>
@@ -36,19 +36,21 @@
     </div>
     <div id="canvas-parent"></div>
     <div id="loading-text" style="top:50%;position:absolute;left:50%;transform:translate(-50%,-50%);z-index:5;font-size:1.5em;">
-      Loading... please wait.
-      <br><br>
-      But while you wait, here's a short explanation:
+      Loading... please wait. 
       <br>
-      Titanic Voyage RPG is an online game/experience that runs every year in sync with the Titanic's maiden voyage.
+      But while you wait, here's a short explanation about this project:
+      <br><br>
+      This page synthesises player movement data from Titanic Voyage RPG, which is an online game/experience that runs every year and simulates the Titanic's maiden voyage.
       <br><br>
       While it isn't historically representative and is ultimately a curiosity more than anything, the event is simulated with hundreds of players, and therefore a lot of roleplay-driven data about player movement is generated. This movement data is implicitly released in the form of message logs.
       <br><br>
       <strong>This webpage geolocates that data onto a map of the ship</strong> - so you can see the flow of players around the game world, and especially how the movement patterns change following the iceberg impact at 11:40pm.
       <br><br>
+      <span style="font-size:0.8em;">(There's a <em>lot</em> of players and a lot of movement though, so that's the reason for the wait - chugging through all of them and locating them on the 3D map!)</span>
+      <br><br>
       <div style="text-align:center;">
         <button id="start-button" type="button" disabled="true" style="cursor:wait;">
-          Loading...
+          Loading... <span class="ship-chug">🚢</span>
         </button>
       </div>      
     </div>

@@ -1,4 +1,4 @@
-# Titanic Voyage RPG movements replay
+# Titanic Voyage RPG replay
 
 ### Explanation
 
