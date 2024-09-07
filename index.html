@@ -2,11 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="https://owlks4.github.io/tvrpg-replay/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛳️</text></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Titanic Voyage RPG replay</title>
-    <script type="module" crossorigin src="https://owlks4.github.io/tvrpg-replay/assets/index-c6j7Hw6a.js"></script>
-    <link rel="stylesheet" crossorigin href="https://owlks4.github.io/tvrpg-replay/assets/index-cU6W_jCL.css">
+    <script type="module" crossorigin src="https://owlks4.github.io/tvrpg-replay/assets/index-TuWZxCI0.js"></script>
+    <link rel="stylesheet" crossorigin href="https://owlks4.github.io/tvrpg-replay/assets/index-Dav5Fvvr.css">
   </head>
   <body>
     <div id="centred-absolute">
@@ -36,6 +36,23 @@
       <div id="unknown-location-message-parent" style="bottom:10%;position:absolute;left:50%;transform:translate(-50%,-50%)">
       </div>
     </div>
-    <div style="top:50%;position:absolute;left:50%;transform:translate(-50%,-50%);z-index:-1;font-size:2em;">Loading... please wait...</div>
+    <div id="canvas-parent"></div>
+    <div id="loading-text" style="top:50%;position:absolute;left:50%;transform:translate(-50%,-50%);z-index:5;font-size:1.5em;">
+      Loading... please wait.
+      <br><br>
+      But while you wait, here's a short explanation:
+      <br>
+      Titanic Voyage RPG is an online game/experience that runs every year in sync with the Titanic's maiden voyage.
+      <br><br>
+      While it isn't historically representative and is ultimately a curiosity more than anything, the event is simulated with hundreds of players, and therefore a lot of roleplay-driven data about player movement is generated. This movement data is implicitly released in the form of message logs.
+      <br><br>
+      <strong>This webpage geolocates that data onto a map of the ship</strong> - so you can see the flow of players around the game world, and especially how the movement patterns change following the iceberg impact at 11:40pm.
+      <br><br>
+      <div style="text-align:center;">
+        <button id="start-button" type="button" disabled="true" style="cursor:wait;">
+          Loading...
+        </button>
+      </div>      
+    </div>
   </body>
 </html>
