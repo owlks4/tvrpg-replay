@@ -10,10 +10,15 @@ import {STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, END_TIME_IN_MILLISECONDS
 import {setTime, titanic_time_milliseconds_since_jan_1_1970} from "./utility.js";
 import * as THREE from "three"
 
-if (window.innerWidth < window.innerHeight){
+if (window.innerWidth < 1000){
   document.body.style = "font-size:0.8em";
   document.getElementById("loading-text").style = "position:absolute;left:5vw;top:5vw;width:80vw";
-  document.getElementById("pan-instruction").innerHTML = "Left-click + drag to pan, scroll in and out to zoom";
+  if (window.innerWidth < window.innerHeight){
+    document.getElementById("pan-instruction").innerHTML = "Left-click + drag to pan, scroll in and out to zoom";
+  }  
+} else {
+  document.getElementById("instructions-menu").style = "text-align:left;padding-top:1em;width:25%;";
+  document.getElementById("highlight-menu").style = "text-align:right;padding-top:1em;width:25%;";
 }
 
 let TIME_RANGE = document.getElementById("time-range");
