@@ -10,6 +10,12 @@ import {STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, END_TIME_IN_MILLISECONDS
 import {setTime, titanic_time_milliseconds_since_jan_1_1970} from "./utility.js";
 import * as THREE from "three"
 
+if (window.innerWidth < window.innerHeight){
+  document.body.style = "font-size:0.8em";
+  document.getElementById("loading-text").style = "position:absolute;left:5vw;top:5vw;width:80vw";
+  document.getElementById("pan-instruction").innerHTML = "Left-click + drag to pan, scroll in and out to zoom";
+}
+
 let TIME_RANGE = document.getElementById("time-range");
 TIME_RANGE.value = 0;
 
@@ -276,7 +282,10 @@ async function start() {
         startButton.style = "";
         startButton.disabled = false;
         startButton.innerText = "Start 🛳️";
-        startButton.onclick = () => {document.getElementById("loading-text").remove(); document.getElementById("centred-absolute").style = ""; animate();}
+        startButton.onclick = () => {
+          document.getElementById("loading-text").remove();
+          document.getElementById("centred-absolute").style = window.innerWidth < window.innerHeight ? "flex-direction:column;justify-content:flex-start;" : "";
+          animate();}
       });                       
 }
 

@@ -101,12 +101,16 @@ canvas .prologue {
 }
 
 #centred-absolute {
-  position:absolute;
-  width:100%;
+  width:100vw;
   text-align: center;
   color: rgba(255, 255, 255, 0.85);
   user-select: none;
-  height:100%;
+  height:fit-content;
+  display:flex;
+  position:absolute;
+  flex-direction:row;
+  justify-content: space-evenly;
+  align-items: center;
   margin:0;
   pointer-events: none;
 }
@@ -119,7 +123,7 @@ canvas .prologue {
 #time-range {
   pointer-events: all;
   width:75em;
-  max-width:90%;
+  max-width:90vw;
 }
 
 #iceberg {
@@ -137,7 +141,7 @@ canvas .prologue {
   margin:auto;
   pointer-events: none;
   width:60em;
-  max-width:90%;
+  max-width:90vw;
 }
 
 input {
