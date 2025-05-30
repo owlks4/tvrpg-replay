@@ -3,11 +3,12 @@ import { GLTFLoader } from "./GLTFLoader.js";
 import {createScene,scene,renderer,controls,camera,spawn2DText,labelRenderer,followedPlayers,
         setDistBetweenCameraAndTargetFromCamAndTargetPos,makePlaneForCharacter,movePeopleIfRequired} from "./scene3d.js";
 import decks from "/decks.gltf?url"
-import OUTPUT_PEOPLE_ROOM_HISTORIES_2023 from "/OUTPUT_PEOPLE_ROOM_HISTORIES_2023.json?url"
+
 import OUTPUT_PEOPLE_ROOM_HISTORIES_2024 from "/OUTPUT_PEOPLE_ROOM_HISTORIES_2024.json?url"
-import {STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970,
-        TIMESCALE, repository_rooms, setStartingTime, setEndingTime } from "./consts.js"
-import {setTime, titanic_time_milliseconds_since_jan_1_1970} from "./utility.js";
+
+import {STARTING_TIME_IN_MILLISECONDS_SINCE_APR_1, END_TIME_IN_MILLISECONDS_SINCE_APR_1,
+        TIMESCALE, repository_rooms, setStartingTime, setEndingTime, setBaseline, baseline } from "./consts.js"
+import {setTime, titanic_time_MILLISECONDS_SINCE_APR_1} from "./utility.js";
 import * as THREE from "three"
 
 if (window.innerWidth < 1000){
@@ -113,29 +114,28 @@ function setHighlightStateOfPersonWithId(id,shouldHighlight){
   }
 }
 
-
 TIME_RANGE.oninput = (e) => {
   let newValue = e.target.value;
-  setTime(STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 + (newValue * (END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 - STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970)))
+  setTime(STARTING_TIME_IN_MILLISECONDS_SINCE_APR_1 + (newValue * (END_TIME_IN_MILLISECONDS_SINCE_APR_1 - STARTING_TIME_IN_MILLISECONDS_SINCE_APR_1)))
   updateVisualClock();
   movePeopleIfRequired();
   }
 
 let loader = new GLTFLoader();
 
-setTime(STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970);
+setTime(STARTING_TIME_IN_MILLISECONDS_SINCE_APR_1);
 let clockRunning = true;
 let lastTimeClockUpdated = Date.now()
 
 createScene();
 start();
 
-function milliseconds_since_jan_1_1970_to_string_time(input) {
-  return new Date(input).toString().split("GMT")[0]
+function MILLISECONDS_SINCE_APR_1_to_string_time(input) {
+  return new Date(baseline + input).toString().split("GMT")[0]
 }
 
 function updateVisualClock(){
-  titleText.innerText = milliseconds_since_jan_1_1970_to_string_time(titanic_time_milliseconds_since_jan_1_1970);
+  titleText.innerText = MILLISECONDS_SINCE_APR_1_to_string_time( titanic_time_MILLISECONDS_SINCE_APR_1);
 }
 
 function getChildByName(scene, name){
@@ -148,9 +148,9 @@ function getChildByName(scene, name){
 }
 
 function atLeastOneCharacterEntryFallsWithinTargetTimeframe(character){
-  for (let i = 0; i < character.room_entry_records.length; i++){
-    let record = character.room_entry_records[i]
-    if (record.t >= STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 && record.t <= END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970){
+  for (let i = 0; i < character.rm_hist.length; i++){
+    let record = character.rm_hist[i]
+    if (record.t >= STARTING_TIME_IN_MILLISECONDS_SINCE_APR_1 && record.t <= END_TIME_IN_MILLISECONDS_SINCE_APR_1){
       return true;
     }
   }
@@ -177,15 +177,6 @@ async function start() {
     e.setSeconds(0)
     e.setMilliseconds(0)
 
-    setStartingTime(s.getTime())
-    setEndingTime(e.getTime())
-
-    setTime(STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970);
-
-    let icebergPercentageTranslation = ((iceberg_time - STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970)
-                                        / (END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 - STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970)) * 100;
-    document.getElementById("iceberg").style = "left:"+icebergPercentageTranslation+"%";
-
     repository_rooms.forEach(room => {
       room.name = room.name.trim().replaceAll("  "," ")
     })
@@ -204,7 +195,18 @@ async function start() {
       break;
     }
 
-    characters = await response.json();
+    let j = await response.json();
+    characters = j.history;
+    setBaseline(j.baseline);
+
+    setStartingTime(s.getTime() - baseline)
+    setEndingTime(e.getTime() - baseline)
+
+    setTime(STARTING_TIME_IN_MILLISECONDS_SINCE_APR_1);
+
+    let icebergPercentageTranslation = ((iceberg_time - (baseline + STARTING_TIME_IN_MILLISECONDS_SINCE_APR_1))
+                                        / ((baseline + END_TIME_IN_MILLISECONDS_SINCE_APR_1) - (baseline + STARTING_TIME_IN_MILLISECONDS_SINCE_APR_1))) * 100;
+    document.getElementById("iceberg").style = "left:"+icebergPercentageTranslation+"%";
 
     for (let i = 0; i < repository_rooms.length; i++){
       let room = repository_rooms[i];
@@ -257,7 +259,7 @@ async function start() {
           character.myRandomPositionScalar = [(Math.random() * amountOfVarianceAllowedInRandomPosition) - (amountOfVarianceAllowedInRandomPosition / 2),
                                               (Math.random() * amountOfVarianceAllowedInRandomPosition) - (amountOfVarianceAllowedInRandomPosition / 2)]          
           charactersSortedbyName.push(character)
-          let lastRoomId = character.room_entry_records[character.room_entry_records.length - 1].rm
+          let lastRoomId = character.rm_hist[character.rm_hist.length - 1].rm
           if (lastRoomId == 600 || lastRoomId == 800){
             character.dies = true
           } else {
@@ -298,12 +300,12 @@ function animate() {
   requestAnimationFrame( animate );
   let now = Date.now()
 
-  if (clockRunning && titanic_time_milliseconds_since_jan_1_1970 < END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 && now - lastTimeClockUpdated >= 1000/TIMESCALE){
-    setTime(titanic_time_milliseconds_since_jan_1_1970 + 1000 * (TIMESCALE/1)); //tick clock 
-    movePeopleIfRequired(characters,titanic_time_milliseconds_since_jan_1_1970);
+  if (clockRunning && titanic_time_MILLISECONDS_SINCE_APR_1 < END_TIME_IN_MILLISECONDS_SINCE_APR_1 && now - lastTimeClockUpdated >= 1000/TIMESCALE){
+    setTime(titanic_time_MILLISECONDS_SINCE_APR_1 + 1000 * (TIMESCALE/1)); //tick clock 
+    movePeopleIfRequired(characters,titanic_time_MILLISECONDS_SINCE_APR_1);
     lastTimeClockUpdated = now;
     updateVisualClock()
-    TIME_RANGE.value = (titanic_time_milliseconds_since_jan_1_1970 - STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970) / (END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 - STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970)
+    TIME_RANGE.value = (titanic_time_MILLISECONDS_SINCE_APR_1 - STARTING_TIME_IN_MILLISECONDS_SINCE_APR_1) / (END_TIME_IN_MILLISECONDS_SINCE_APR_1 - STARTING_TIME_IN_MILLISECONDS_SINCE_APR_1)
   }
   controls.update();
   setDistBetweenCameraAndTargetFromCamAndTargetPos(camera.position.distanceTo(controls.target))

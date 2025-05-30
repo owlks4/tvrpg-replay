@@ -1,7 +1,7 @@
 import * as THREE from "three"
 import { OrbitControls } from "./OrbitControls.js";
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { repository_rooms,STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970} from "./consts.js";
+import { repository_rooms, baseline, END_TIME_IN_MILLISECONDS_SINCE_APR_1} from "./consts.js";
 
 let scene = null;
 let renderer = null;
@@ -70,19 +70,19 @@ function getLatestEntryInCharacterHistoryGivenThisTimestamp(character,time){
 
     let hadToUseLastEntry = false; //if we end up using the last entry in their history, we just make their character disappear - stops random people who last logged off on the forecastle from staying there forever.
 
-    for (let i = 0; i < character.room_entry_records.length; i++){
-        let candidate = character.room_entry_records[i]
+    for (let i = 0; i < character.rm_hist.length; i++){
+        let candidate = character.rm_hist[i]
         if (candidate.t > entry.t && candidate.t <= time){
             entry = candidate;
             index = i;
-            if (i == character.room_entry_records.length - 1){
+            if (i == character.rm_hist.length - 1){
                 hadToUseLastEntry = true;
             }
         }
     }
 
     if (hadToUseLastEntry  //if this is their last entrance, then instead of displaying it, just put them in hell, off-screen - otherwise randos will be hanging around on titanic in the last place they spoke, even when it has sunk        
-        || (character.room_entry_records[index+1].t > END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970)){ //(cont.) or, if their next entry is after the end of our viewing period.
+        || (character.rm_hist[index+1].t > END_TIME_IN_MILLISECONDS_SINCE_APR_1)){ //(cont.) or, if their next entry is after the end of our viewing period.
         return {"rm": 600, "t": 0};                                                                              
     }
 
@@ -198,7 +198,7 @@ function movePeopleIfRequired(characters,time){
                         let trail = new THREE.Mesh( character.object3d.geometry, character.object3d.material )
                         trail.position.set(newRoom.object3d.position.x,newRoom.position3D.y,newRoom.object3d.position.z)
                         trail.scale.set(3,3,3)
-                        let trailText = spawn2DText(trail, new Date(newestEntryAtThisTime.t).toTimeString().split(" GMT")[0], 0.5, "", "", "")
+                        let trailText = spawn2DText(trail, new Date(baseline + newestEntryAtThisTime.t).toTimeString().split(" GMT")[0], 0.5, "", "", "")
                         trail.textObject = trailText
                         scene.add(trail)
                         character.myTrails.push(trail);

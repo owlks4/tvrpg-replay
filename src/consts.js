@@ -1,12 +1,17 @@
-let STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = 0;
-let END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = 0
+let STARTING_TIME_IN_MILLISECONDS_SINCE_APR_1 = 0;
+let END_TIME_IN_MILLISECONDS_SINCE_APR_1 = 0
+let baseline = 0;
 
 function setStartingTime(newStartingTime){
-    STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = newStartingTime
+    STARTING_TIME_IN_MILLISECONDS_SINCE_APR_1 = newStartingTime
 }
 
 function setEndingTime(newEndingTime){
-    END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970 = newEndingTime
+    END_TIME_IN_MILLISECONDS_SINCE_APR_1 = newEndingTime
+}
+
+function setBaseline(newBaseline){
+    baseline = newBaseline;
 }
 
 const TIMESCALE = 25;
@@ -2284,5 +2289,5 @@ var repository_vehicles = [
 
 repository_rooms.push({"id":-1,"deck":-1,"name":"Nowhere"},)
 
-export {STARTING_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, END_TIME_IN_MILLISECONDS_SINCE_JAN_1_1970, setStartingTime, setEndingTime,
-       TIMESCALE, repository_rooms, repository_vehicles }
+export {STARTING_TIME_IN_MILLISECONDS_SINCE_APR_1, END_TIME_IN_MILLISECONDS_SINCE_APR_1, setStartingTime, setEndingTime,
+        setBaseline, baseline, TIMESCALE, repository_rooms, repository_vehicles }
